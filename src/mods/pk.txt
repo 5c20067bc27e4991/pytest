@@ -1,0 +1,7 @@
+(lp0
+I123
+aS'hello'
+p1
+aS'hehe'
+p2
+a.
