@@ -4,14 +4,14 @@ Created on 2017年3月20日
 @author: guanglin
 '''
 import tempfile,os,time,sys
-print 'getcwd==>',os.getcwd()
-print 'gettempdir()==>',tempfile.gettempdir()
-print 'gettempprefix()==>',tempfile.gettempprefix()
-print 'mktemp()==>',tempfile.mktemp('.abc','cn_','.')
+print('getcwd==>',os.getcwd())
+print('gettempdir()==>',tempfile.gettempdir())
+print('gettempprefix()==>',tempfile.gettempprefix())
+print('mktemp()==>',tempfile.mktemp('.abc','cn_','.'))
 
 
 tmpf=tempfile.mkstemp('.txt', 'CN_', '.')
-print tmpf
+print(tmpf)
 tfile=os.open(tmpf[1],os.O_WRONLY)
 os.write(tfile,time.strftime('%Y-%m-%d %H:%M:%S',time.localtime())+'\n')
 os.write(tfile,time.strftime('%Y-%m-%d %H:%M:%S',time.localtime()))
@@ -24,7 +24,7 @@ os.close(tmpf[0])##需要再次关闭
 # tfile.close()
 
 tmpdir=tempfile.mkdtemp('_t', 'Tdir_', '.')
-print tmpdir
+print(tmpdir)
 
 
 #创建临时文件，close后自动删除
@@ -39,6 +39,6 @@ time.sleep(3)
 try:
     os.remove(tmpf[1])
 except WindowsError:
-    print u"%s 文件正在被使用!" %tmpf[1]
+    print("%s 文件正在被使用!" %tmpf[1])
 os.rmdir(tmpdir)
-print '-'*20
+print('-'*20)

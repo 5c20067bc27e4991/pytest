@@ -4,32 +4,32 @@ Created on 2017年3月20日
 @author: guanglin
 '''
 import random,string
-print 'random()==>'
+print('random()==>')
 for i in range(5):
-    print random.random(),
+    print(random.random(), end=' ')
     
-print '\n\nuniform()==>'
+print('\n\nuniform()==>')
 for i in range(5):
-    print random.uniform(10,12),
+    print(random.uniform(10,12), end=' ')
     
-print '\n\nrandint()==>'
+print('\n\nrandint()==>')
 for i in range(5):
-    print random.randint(10,12),
+    print(random.randint(10,12), end=' ')
     
-print '\n\nrandrange()==>'
+print('\n\nrandrange()==>')
 for i in range(5):
-    print random.randrange(10,14,2),
+    print(random.randrange(10,14,2), end=' ')
     
-print '\n\nchoice()==>'
+print('\n\nchoice()==>')
 for i in range(5):
-    print random.choice('Hello'),
+    print(random.choice('Hello'), end=' ')
     
-print '\n\nshuffle()==>'
+print('\n\nshuffle()==>')
 lst=[1,2,3,4,5,6,7,8,9]
 random.shuffle(lst)
-print lst
+print(lst)
 
-print '\n\nsample()==>'
+print('\n\nsample()==>')
 lst=[1,2,3,4,5,6,7,8,9]
-print random.sample(lst,5)
-print lst
+print(random.sample(lst,5))
+print(lst)

@@ -5,24 +5,24 @@ Created on 2017年4月6日
 '''
 ##HTMLParser示例：获取人人网首页上的各各链接地址 
 #coding: utf-8 
-from htmlentitydefs import entitydefs 
-import HTMLParser,urllib,urllib2
+from html.entities import entitydefs 
+import html.parser,urllib.request,urllib.parse,urllib.error,urllib.request,urllib.error,urllib.parse
 def getimage(addr): 
-    u = urllib2.urlopen(addr)
+    u = urllib.request.urlopen(addr)
     data = u.read() 
     filename=addr.split('/')[-1] 
     f=open(filename,'wb') 
     f.write(data) 
     f.close() 
-    print filename+'已经生成！' 
-class TitleParser(HTMLParser.HTMLParser): 
+    print(filename+'已经生成！') 
+class TitleParser(html.parser.HTMLParser): 
     def __init__(self): 
         self.taglevels=[] 
         self.handledtags=['a'] 
         self.processing=None 
         self.linkstring='' 
         self.linkaddr='' 
-        HTMLParser.HTMLParser.__init__(self)        
+        html.parser.HTMLParser.__init__(self)        
     def handle_starttag(self,tag,attrs): 
         if tag in self.handledtags: 
             for name,value in attrs: 
@@ -36,11 +36,11 @@ class TitleParser(HTMLParser.HTMLParser):
             #print data.decode('utf-8')+':'+self.linkaddr 
     def handle_endtag(self,tag): 
         if tag==self.processing: 
-            print self.linkstring.decode('utf-8')+':'+self.linkaddr 
+            print(self.linkstring.decode('utf-8')+':'+self.linkaddr) 
             self.processing=None 
             self.linkstring='' 
     def handle_entityref(self,name): 
-        if entitydefs.has_key(name): 
+        if name in entitydefs: 
             self.handle_data(entitydefs[name]) 
         else: 
             self.handle_data('&'+name+';') 
@@ -57,4 +57,4 @@ class TitleParser(HTMLParser.HTMLParser):
     def gettitle(self): 
         return self.linkaddr 
 tp=TitleParser() 
-tp.feed(urllib2.urlopen('http://www.renren.com/').read())
+tp.feed(urllib.request.urlopen('http://www.renren.com/').read())
