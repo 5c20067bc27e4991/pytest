@@ -5,9 +5,9 @@ Created on 2017年3月28日
 decorator
 '''
 def inner():
-    print 'hey,inner.'
+    print('hey,inner.')
 def out(func):
-    print 'loading '+func.__name__
+    print('loading '+func.__name__)
     func()
 
 out(inner)
@@ -24,15 +24,15 @@ class Stu(object):
     @score.setter
     def score(self,value):
         if value<0 or value > 100:
-            print "Value Error."
+            print("Value Error.")
         else:
             self.score1=value
             
     def __call__(self):
-        print 'cao'
+        print('cao')
     
 #             
 s1=Stu('Lilei',100)
-print s1.score
+print(s1.score)
 # print s1.score
 s1()
