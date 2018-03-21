@@ -16,7 +16,7 @@ while True:
     s.send(cmd.encode("utf-8"))
 
     package_len = s.recv(4)
-    package_size = struct.unpack("i",package_len)[0]
+    package_size = struct.unpack("i", package_len)[0]
 
     recv_size = 0
     recv_bytes = b""
