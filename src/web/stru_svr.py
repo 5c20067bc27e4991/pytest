@@ -10,15 +10,17 @@ class MyRequestHandler(StreamRequestHandler):
 
         while True:
             print("connect from:", self.client_address)
-            cmd = bytes.decode(self.request.recv(1024))
-            if not cmd: break
-            res = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            err = res.stderr.read()
-            if err:
-                back_msg = err
-            else:
-                back_msg = res.stdout.read()
+            # cmd = bytes.decode(self.request.recv(1024))
+            # if not cmd: break
+            # res = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # err = res.stderr.read()
+            # if err:
+            #     back_msg = err
+            # else:
+            #     back_msg = res.stdout.read()
 
+            back_msg = self.request.recv(1024)
+            print(back_msg)
             self.request.send(struct.pack("i", len(back_msg)))
             self.request.send(back_msg)
 
