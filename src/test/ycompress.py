@@ -1,3 +1,0 @@
-import tarfile
-
-tarfile.open

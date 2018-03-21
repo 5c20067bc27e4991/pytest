@@ -5,7 +5,7 @@ import time
 
 curr_time = time.strftime('%Y%m%d_%H%M%S', time.localtime())
 src_outer_dir = 'res'
-src_dirs = ('C', 'B', '123.txt')
+src_dirs = ('C', 'B', '123.txt','xxx','yyy')
 dst_file_name = curr_time + '.tgz'
 curr_path = os.getcwd()
 cmp_file_full = os.path.join(curr_path, dst_file_name)
@@ -20,17 +20,18 @@ def cmp_dir(src_path, dst_path, *src_dirs):
     curr_time = time.strftime('%Y%m%d_%H%M%S', time.localtime())
     dst_file_full = os.path.join(dst_path, curr_time + '.tgz')
     tar = tarfile.open(dst_file_full, 'w:gz')
-    # for dirpath, dirname, filename in os.walk('.'):
-    #     for f in filename:
-    #         tar.add(os.path.join(dirpath, f))
-    #         print('add--' + os.path.join(dirpath, f))
-    #     for d in dirname:
-    #         tar.add(os.path.join(dirpath, d))
-    #         print('add--' + os.path.join(dirpath, d))
+    # for i in src_dirs:
+    #     for root, dirs, files in os.walk(i):
+    #         for file in files:
+    #             tar.add(os.path.join(root, file))
+    #         for dir in dirs:
+    #             tar.add(os.path.join(root, dir))
     ##效果相同
     for i in src_dirs:
-        print(i)
-        tar.add(i)
+        try:
+            tar.add(i)
+        except FileNotFoundError:
+            print('文件'+i+'不存在！')
     tar.close()
     os.chdir(curr_path)
 
