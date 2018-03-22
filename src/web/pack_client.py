@@ -20,7 +20,7 @@ if __name__ == '__main__':
     cmd = 101
     header = [ver, body.__len__(), cmd]
     headPack = struct.pack("!3I", *header)
-    sendData1 = headPack+body.encode()
+    sendData1 = headPack + body.encode()
 
     # 分包数据定义
     ver = 2
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     cmd = 102
     header = [ver, body.__len__(), cmd]
     headPack = struct.pack("!3I", *header)
-    sendData2_1 = headPack+body[:2].encode()
+    sendData2_1 = headPack + body[:2].encode()
     sendData2_2 = body[2:].encode()
 
     # 粘包数据定义
@@ -47,8 +47,7 @@ if __name__ == '__main__':
     header = [ver, body2.__len__(), cmd]
     headPack2 = struct.pack("!3I", *header)
 
-    sendData3 = headPack1+body1.encode()+headPack2+body2.encode()
-
+    sendData3 = headPack1 + body1.encode() + headPack2 + body2.encode()
 
     # 正常数据包
     client.send(sendData1)
@@ -63,4 +62,6 @@ if __name__ == '__main__':
     # 粘包测试
     client.send(sendData3)
     time.sleep(3)
+
+
     client.close()

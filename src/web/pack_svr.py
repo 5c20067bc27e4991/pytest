@@ -27,12 +27,12 @@ if __name__ == '__main__':
             while True:
                 data = conn.recv(1024)
                 if data:
-                    # 把数据存入缓冲区，类似于push数据
+                    # 把数据存入缓冲区
                     dataBuffer += data
                     while True:
-                        if len(dataBuffer) < headerSize:
-                            print("数据包（%s Byte）小于消息头部长度，跳出小循环" % len(dataBuffer))
-                            break
+                        # if len(dataBuffer) < headerSize:
+                        #     print("数据包（%s Byte）小于消息头部长度，继续写入缓冲区" % len(dataBuffer))
+                        #     break
 
                         # 读取包头
                         # struct中:!代表Network order，3I代表3个unsigned int数据
@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
                         # 分包情况处理，跳出函数继续接收数据
                         if len(dataBuffer) < headerSize+bodySize :
-                            print("数据包（%s Byte）不完整（总共%s Byte），跳出小循环" % (len(dataBuffer), headerSize+bodySize))
+                            print("数据包（%s Byte）不完整（总共%s Byte），继续写入缓冲区" % (len(dataBuffer), headerSize+bodySize))
                             break
                         # 读取消息正文的内容
                         body = dataBuffer[headerSize:headerSize+bodySize]

@@ -10,3 +10,4 @@ unpack_data = struct.unpack('i3sf',pack_data)
 
 print(pack_data)
 print(unpack_data)
+print(struct.calcsize('3I'))
