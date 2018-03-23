@@ -5,10 +5,12 @@ import os
 s = '\e/a/b/c.txt'
 print(os.path.split(s)[1])
 
+a = 1
+i=10
 
-def f(a, b):
-    return 1, 2
+def f():
+    global i
+    i=100
 
-x,y=f(6,8)
-print(type(x),y)
-print(eval('os.listdir()'))
+f()
+print(i)
