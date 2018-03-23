@@ -10,7 +10,9 @@ dataBuf = bytes()
 s.connect((host, port))
 
 while True:
-    s.send(mkpack.buildPack('cmd', 'os.listdir()'))
+    for i in range(5):
+        print(i)
+        s.send(mkpack.buildPack('cmd', 'os.listdir()'))
     data = s.recv(1024)
     dataBuf += data
     dataType, dataBody, dataBuf = mkpack.recvPack(dataBuf, mkpack.headSize)

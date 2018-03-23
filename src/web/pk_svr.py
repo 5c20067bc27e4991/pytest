@@ -2,7 +2,6 @@ import socket
 import struct
 import os
 import mkpack
-import json
 
 s = socket.socket()
 host = '0.0.0.0'
@@ -29,8 +28,9 @@ while True:
     dataHandle(dataType, dataBody)
     # SD = mkpack.buildPack(dataType, dataBody)
     # conn.send(SD)
-    print(dataType[:3], dataBody)
-    if dataType[:3] == 'cmd':
+    dataType = dataType.strip('\x00')
+    print(dataType, dataBody)
+    if dataType == 'cmd':
         print(eval(dataBody))
 
 conn.close()

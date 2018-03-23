@@ -15,6 +15,7 @@ def buildPack(dataType, dataBody):
     sendData = headStruct + dataBody.encode('utf-8')
     return sendData
 
+
 def recvPack(dataBuf, headSize):
     while True:
         if len(dataBuf) < headSize:
