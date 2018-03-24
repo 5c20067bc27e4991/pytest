@@ -17,21 +17,18 @@ def buildPack(dataType, dataBody):
 
 
 def recvPack(dataBuf, headSize):
-    while True:
-        if len(dataBuf) < headSize:
-            break
-        dataType = struct.unpack(structDataType, dataBuf[:headSize])[0]
-        bodySize = struct.unpack(structDataType, dataBuf[:headSize])[1]
+    dataType = struct.unpack(structDataType, dataBuf[:headSize])[0]
+    bodySize = struct.unpack(structDataType, dataBuf[:headSize])[1]
 
-        if len(dataBuf) < headSize + bodySize:
-            print('Error!!!!!')
-            print('############')
-            print(dataBuf.decode())
-            print('############')
-            return None, None, dataBuf
+    if len(dataBuf) < headSize + bodySize:
+        print('Error!!!!!')
+        print('############')
+        print(dataBuf.decode())
+        print('############')
+        return None, None, dataBuf
 
-        body = dataBuf[headSize:headSize + bodySize]
+    body = dataBuf[headSize:headSize + bodySize]
 
-        # 粘包处理
-        dataBuf = dataBuf[headSize + bodySize:]
-        return dataType.decode(), body.decode(), dataBuf
+    # 粘包处理
+    dataBuf = dataBuf[headSize + bodySize:]
+    return dataType.decode(), body.decode(), dataBuf
