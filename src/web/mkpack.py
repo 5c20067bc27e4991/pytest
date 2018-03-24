@@ -25,10 +25,10 @@ def recvPack(dataBuf, headSize):
 
         if len(dataBuf) < headSize + bodySize:
             print('Error!!!!!')
-            # exit(1)
-            global bk
-            bk = True
-            break
+            print('############')
+            print(dataBuf.decode())
+            print('############')
+            return None, None, dataBuf
 
         body = dataBuf[headSize:headSize + bodySize]
 

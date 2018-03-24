@@ -9,8 +9,9 @@ a = 1
 i=10
 
 def f():
-    global i
-    i=100
+    return None,None
 
-f()
-print(i)
+a,b=f()
+print(a)
+if not a:
+    print('yes')

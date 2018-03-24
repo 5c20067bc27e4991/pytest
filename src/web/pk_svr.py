@@ -23,26 +23,21 @@ def dataHandle(dataType, dataBody):
 
 conn, addr = s.accept()
 
-bk = False
 while True:
-    data = conn.recv(100)
+    data = conn.recv(1024)
     print('DATA==>', data.decode())
     dataBuf += data
     while len(dataBuf) >= mkpack.headSize:
-        # dataBuf += data
         dataType, dataBody, dataBuf = mkpack.recvPack(dataBuf, mkpack.headSize)
-        if bk:
+        if not dataBody:
             break
-        # dataHandle(dataType, dataBody)
         dataType = dataType.strip('\x00')
-        print(dataType, dataBody)
+        # print(dataType, dataBody)
         print('len databuf:', len(dataBuf))
         if dataType[:3] == 'cmd':
             print(dataType)
             # print(eval(dataBody))
-            print(dataBody)
-            # if not dataBuf:
-            #     print('exit')
-            #     break
+            # print(dataBody)
+            # conn.send(mkpack.buildPack('Ret', dataBody))
 
 conn.close()
