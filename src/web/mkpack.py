@@ -21,10 +21,6 @@ def recvPack(dataBuf, headSize):
     bodySize = struct.unpack(structDataType, dataBuf[:headSize])[1]
 
     if len(dataBuf) < headSize + bodySize:
-        print('############')
-        print('dataBuf超过headSize + bodySize!!!!!')
-        print(dataBuf.decode())
-        print('############')
         return None, None, dataBuf
 
     body = dataBuf[headSize:headSize + bodySize]

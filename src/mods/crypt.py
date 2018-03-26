@@ -34,4 +34,5 @@ def veri_sign(rsa_pub_file, cont, signature):
         print('Invalid signature!')
 
 SIGN1 = sign(rsa_file, cont)
+print(SIGN1)
 veri_sign(rsa_pub_file, cont, SIGN1)

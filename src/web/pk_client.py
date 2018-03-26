@@ -9,9 +9,13 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import MD5
 
-very_cont = 'Hello'
+veri_cont_init = 'Hello'
+if len(veri_cont_init) >= 5:
+    veri_cont = veri_cont_init[:5]
+else:
+    veri_cont = veri_cont_init.ljust(5, '0')
+
 rsa_file = 'id_rsa'
-rsa_pub_file = 'id_rsa.pub'
 
 s = socket.socket()
 host = "127.0.0.1"
@@ -32,11 +36,9 @@ def sign(rsa_file, cont):
     return signature
 
 
+s.send(mkpack.buildPack('verify', sign(rsa_file, veri_cont).decode('utf-8') + veri_cont))
+veri_flag = True
 while True:
-    s.send(mkpack.buildPack('very_cont', very_cont))
-    # for i in range(1, 101):
-    #     print(i)
-    #     s.send(mkpack.buildPack('cmd' + str(i), 'a' * 50 + '!'))
     data = s.recv(1024)
     dataBuf += data
     while len(dataBuf) >= mkpack.headSize:
@@ -44,6 +46,12 @@ while True:
         if not dataBody:
             break
         dataType = dataType.strip('\x00')
+        if dataType == 'veri_resp' and dataBody == 'Verify failed':
+            print('Verify failed.\nConnection closed.')
+            veri_flag = False
+            break
+        if not veri_flag:
+            break
         print(dataType, dataBody)
 s.close()
 # exit(0)
