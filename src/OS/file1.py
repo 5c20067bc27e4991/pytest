@@ -2,6 +2,7 @@
 '''
 Created on 2017年3月9日
 @author: guanglin
+Python ver:2.x
 '''
 import os,chardet
 print('Current DIR: '+os.getcwd())
