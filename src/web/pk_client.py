@@ -53,23 +53,30 @@ while True:
             break
         if dataType == 'veriOK' and veriNo == dataBody[-36:]:
             veri_ok = True
+
+        if veri_ok:
+            if veriNo == dataBody[-36:]:
+                send_uuid = str(uuid.uuid1())
+                s.send(mkpack.buildPack('cmd', 'os.listdir()' + send_uuid))
+            if dataType == 'RunErr':
+                print('Run failed: ' + dataBody[:-36])
+                print('Run failed: ' + dataBody)
+                BK = True
+                break
+            if dataType == 'RunFin' and send_uuid == dataBody[-36:]:
+                send_uuid = str(uuid.uuid1())
+                # print(dataBody[:-36] + 'Run completely.')
+                print(dataBody + 'Run completely.')
+                s.send(mkpack.buildPack('cmd', 'print("hehehe")' + send_uuid))
+            if dataType == 'RunFin' and send_uuid == dataBody[-36:]:
+                send_uuid = str(uuid.uuid1())
+                # print(dataBody[:-36] + 'Run completely.')
+                print(dataBody + 'Run completely.')
+                print('Over')
+                BK = True
+                veri_ok = False
+                break
     if BK:
         break
-
-    if veri_ok:
-        send_uuid = str(uuid.uuid1())
-        if veriNo == dataBody[-36:]:
-            s.send(mkpack.buildPack('cmd', 'os.listdir()' + send_uuid))
-        if dataType == 'RunErr':
-            print('Run failed: ' + dataBody[:-36])
-            print('Run failed: ' + dataBody)
-            BK = True
-            break
-        # if dataType == 'RunFin' and send_uuid == dataBody[-36:]:
-        if dataType == 'RunFin':
-            print(send_uuid)
-            # print(dataBody[:-36] + 'Run completely.')
-            print(dataBody[:] + 'Run completely.')
-            s.send(mkpack.buildPack('cmd', 'print("hehehe")' + send_uuid))
 
 s.close()
