@@ -5,6 +5,7 @@ import socket
 import struct
 import mkpack
 import base64
+import uuid
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import MD5
@@ -21,23 +22,23 @@ s = socket.socket()
 host = "127.0.0.1"
 port = 8888
 dataBuf = bytes()
-
 s.connect((host, port))
 
 
 def sign(rsa_file, cont):
     with open(rsa_file, 'r') as rsa_key:
         rsa_cont = rsa_key.read()
-
-    priKey = RSA.importKey(rsa_cont)
-    signer = PKCS1_v1_5.new(priKey)
+    prikey = RSA.importKey(rsa_cont)
+    signer = PKCS1_v1_5.new(prikey)
     hash_obj = MD5.new(cont.encode('utf-8'))
     signature = base64.b64encode(signer.sign(hash_obj))
     return signature
 
 
-s.send(mkpack.buildPack('verify', sign(rsa_file, veri_cont).decode('utf-8') + veri_cont))
-veri_flag = True
+veriNo = str(uuid.uuid1())
+s.send(mkpack.buildPack('verify', sign(rsa_file, veri_cont).decode('utf-8') + veri_cont + veriNo))
+veri_ok = False
+BK = False
 while True:
     data = s.recv(1024)
     dataBuf += data
@@ -46,12 +47,29 @@ while True:
         if not dataBody:
             break
         dataType = dataType.strip('\x00')
-        if dataType == 'veri_resp' and dataBody == 'Verify failed':
+        if dataType == 'veriFail' and veriNo == dataBody[-36:]:
             print('Verify failed.\nConnection closed.')
-            veri_flag = False
+            BK = True
             break
-        if not veri_flag:
+        if dataType == 'veriOK' and veriNo == dataBody[-36:]:
+            veri_ok = True
+    if BK:
+        break
+
+    if veri_ok:
+        send_uuid = str(uuid.uuid1())
+        if veriNo == dataBody[-36:]:
+            s.send(mkpack.buildPack('cmd', 'os.listdir()' + send_uuid))
+        if dataType == 'RunErr':
+            print('Run failed: ' + dataBody[:-36])
+            print('Run failed: ' + dataBody)
+            BK = True
             break
-        print(dataType, dataBody)
+        # if dataType == 'RunFin' and send_uuid == dataBody[-36:]:
+        if dataType == 'RunFin':
+            print(send_uuid)
+            # print(dataBody[:-36] + 'Run completely.')
+            print(dataBody[:] + 'Run completely.')
+            s.send(mkpack.buildPack('cmd', 'print("hehehe")' + send_uuid))
+
 s.close()
-# exit(0)

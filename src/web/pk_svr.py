@@ -45,17 +45,25 @@ while True:
             break
         dataType = dataType.strip('\x00')
         if dataType == 'verify':
-            signature = dataBody[:-5]
-            veri_cont = dataBody[-5:]
+            signature = dataBody[:-41]
+            veri_cont = dataBody[-41:-36]
         if veri_sign(rsa_pub_file, veri_cont, signature):
-            conn.send(mkpack.buildPack('veri_resp', 'Verify successfully.'))
+            conn.send(mkpack.buildPack('veriOK', dataBody[-36:]))
         else:
-            conn.send(mkpack.buildPack('veri_resp', 'Verify failed'))
+            conn.send(mkpack.buildPack('veriFail', dataBody[-36:]))
 
-        if dataType[:3] == 'cmd':
+        if dataType == 'cmd':
+            dataCont = dataBody[:-36]
+            dataNo = dataBody[-36:]
             print(dataType)
-            # print(eval(dataBody))
-            # print(dataBody)
-            # conn.send(mkpack.buildPack('Ret', dataBody))
+
+            try:
+                print(eval(dataCont))
+            except BaseException:
+                conn.send(mkpack.buildPack('RunErr', dataBody))
+            conn.send(mkpack.buildPack('RunFin', dataBody))
+
+# print(dataBody)
+# conn.send(mkpack.buildPack('Ret', dataBody))
 
 conn.close()
