@@ -6,6 +6,7 @@ import mkpack
 import base64
 import json
 import os
+import hashlib
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import MD5
@@ -53,13 +54,31 @@ while True:
                 verified = True
             else:
                 conn.send(mkpack.buildPack('veriFail', '0'))
-
+        # print(dataType, '--', dataBody)
         if dataType == 'fileStart':
             file_name = json.loads(dataBody)[0]
             file_size = json.loads(dataBody)[1]
             print(file_name, file_size)
+            create_file_flag = True
         if dataType == 'file':
-            print(dataBody)
+            if create_file_flag:
+                new_md5 = hashlib.md5()
+                new_file = open(file_name, 'wb')
+                create_file_flag = False
+            new_file.write(dataBody)
+            new_md5.update(dataBody)
+        if dataType == 'fileFin':
+            new_file.close()
+            new_md5 = new_md5.hexdigest()
+            print(file_name + 'received completely.')
+            print('New MD5: ' + new_md5)
+            print('MD5: ' + dataBody)
+            if dataBody == new_md5:
+                print('文件接收成功')
+            else:
+                print('File received wrong.')
+            conn.send(mkpack.buildPack('End', '0'))
+
 
         if dataType == 'cmd':
             cmds = json.loads(dataBody)
@@ -75,6 +94,7 @@ while True:
                 conn.send(mkpack.buildPack('RunFin', i))
                 print(i, 'ok')
             conn.send(mkpack.buildPack('End', '0'))
+            print('End')
 
 # print(dataBody)
 # conn.send(mkpack.buildPack('Ret', dataBody))

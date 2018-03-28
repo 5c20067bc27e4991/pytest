@@ -7,4 +7,6 @@ def f():
     print(t2.tt + 444)
 
 
-print(('啊'.encode()[:-1]).decode('utf-8'))
+a = 123
+b = 456
+print('==>{}<=='.format (a - b))

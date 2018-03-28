@@ -38,4 +38,6 @@ def recvPack(dataBuf, headSize):
 
     # 粘包处理
     dataBuf = dataBuf[headSize + bodySize:]
+    if dataType.decode('utf-8').strip('\x00') == 'file':
+        return 'file', body, dataBuf
     return dataType.decode(), body.decode(), dataBuf

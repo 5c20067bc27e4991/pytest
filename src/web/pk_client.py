@@ -7,10 +7,12 @@ import base64
 import json
 import time
 import os
+import hashlib
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import MD5
 
+t_start = time.time()
 veri_cont_init = 'Hello'
 if len(veri_cont_init) >= 5:
     veri_cont = veri_cont_init[:5]
@@ -30,14 +32,13 @@ def sign(rsa_file, cont):
     return signature
 
 
-code_file = r'c:\ffmpeg.exe'
+code_file = r'C:\Users\guanglin\Desktop\t.exe'
 if os.path.exists(code_file):
-    file_md5 = mkpack.cal_md5(code_file)
     file_size = os.path.getsize(code_file)
 else:
     print(code_file, ' does not exist.')
 
-cmds = ['os.listdir()', 'print("hehe1")', 'print9("hehe2")']
+cmds = ['os.listdir()', 'print("hehe1")', 'print("hehe2")']
 s = socket.socket()
 host = "127.0.0.1"
 port = 8888
@@ -46,7 +47,7 @@ s.connect((host, port))
 
 s.send(mkpack.buildPack('verify', sign(rsa_file, veri_cont).decode('utf-8') + veri_cont))
 veri_ok = False
-file_flag = False
+send_file_flag = False
 cmd_flag = False
 BK = False
 
@@ -65,24 +66,30 @@ while True:
             break
         if dataType == 'veriOK':
             veri_ok = True
-            file_flag = True
+            send_file_flag = True
 
         if veri_ok:
             ##发送文件
-            if file_flag:
+            if send_file_flag:
                 sent_size = 0
                 rem_size = 0
+                send_once = 5000
+                md5 = hashlib.md5()
                 s.send(mkpack.buildPack('fileStart', json.dumps([os.path.split(code_file)[-1], file_size])))
                 with open(code_file, 'rb') as cf:
-                    # while sent_size < file_size:
-                    #     rem_size = file_size - sent_size
-                    #     send_size = file_size if rem_size > file_size else rem_size
-                    #     s.send(mkpack.buildPack('file', cf.read(send_size)))
-                    #     sent_size += send_size
-                    s.send(mkpack.buildPack('file', cf.read(file_size)))
-                s.send(mkpack.buildPack('fileFin', file_md5))
-                file_flag = False
-                cmd_flag = True
+                    while sent_size < file_size:
+                        rem_size = file_size - sent_size
+                        send_size = send_once if rem_size > send_once else rem_size
+                        send_b = cf.read(send_size)
+                        s.send(mkpack.buildPack('file', send_b))
+                        # md5.update(send_b)
+                        sent_size += send_size
+                        print(sent_size, '/', file_size)
+                md5 = md5.hexdigest()
+                s.send(mkpack.buildPack('fileFin', md5))
+                print('File sent.')
+                send_file_flag = False
+                # cmd_flag = True
 
             ##发送命令
             if cmd_flag:
@@ -95,11 +102,12 @@ while True:
             if dataType == 'RunFin':
                 print(dataBody + ' Run completed.')
             if dataType == 'End':
-                print('Task completed.', dataBody)
-                time.sleep(5)
+                print('Task completed.')
                 BK = True
                 break
     if BK:
         break
 
 s.close()
+t_end = time.time()
+print('Took %s seconds' %(t_end - t_start))
