@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import socket
-import struct
-import os
 import mkpack
 import base64
+import json
+import os
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import MD5
@@ -35,7 +35,7 @@ def dataHandle(dataType, dataBody):
 
 
 conn, addr = s.accept()
-
+verified = False
 while True:
     data = conn.recv(1024)
     dataBuf += data
@@ -44,24 +44,30 @@ while True:
         if not dataBody:
             break
         dataType = dataType.strip('\x00')
-        if dataType == 'verify':
-            signature = dataBody[:-41]
-            veri_cont = dataBody[-41:-36]
-        if veri_sign(rsa_pub_file, veri_cont, signature):
-            conn.send(mkpack.buildPack('veriOK', dataBody[-36:]))
-        else:
-            conn.send(mkpack.buildPack('veriFail', dataBody[-36:]))
+        if not verified:
+            if dataType == 'verify':
+                signature = dataBody[:-5]
+                veri_cont = dataBody[-5:]
+            if veri_sign(rsa_pub_file, veri_cont, signature):
+                conn.send(mkpack.buildPack('veriOK', '0'))
+                verified = True
+            else:
+                conn.send(mkpack.buildPack('veriFail', '0'))
 
         if dataType == 'cmd':
-            dataCont = dataBody[:-36]
-            dataNo = dataBody[-36:]
-            print(dataType)
-
-            try:
-                print(eval(dataCont))
-            except BaseException:
-                conn.send(mkpack.buildPack('RunErr', dataBody))
-            conn.send(mkpack.buildPack('RunFin', dataBody))
+            cmds = json.loads(dataBody)
+            print(cmds)
+            for i in cmds:
+                try:
+                    eval(i)
+                    # print(i)
+                except BaseException:
+                    conn.send(mkpack.buildPack('RunErr', i))
+                    print('RunErr: ' + i)
+                    break
+                conn.send(mkpack.buildPack('RunFin', i))
+                print(i, 'ok')
+            conn.send(mkpack.buildPack('End', '0'))
 
 # print(dataBody)
 # conn.send(mkpack.buildPack('Ret', dataBody))

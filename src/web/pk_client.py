@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import socket
-import struct
 import mkpack
 import base64
-import uuid
+import json
+import time
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import MD5
@@ -18,12 +18,6 @@ else:
 
 rsa_file = 'id_rsa'
 
-s = socket.socket()
-host = "127.0.0.1"
-port = 8888
-dataBuf = bytes()
-s.connect((host, port))
-
 
 def sign(rsa_file, cont):
     with open(rsa_file, 'r') as rsa_key:
@@ -35,9 +29,16 @@ def sign(rsa_file, cont):
     return signature
 
 
-veriNo = str(uuid.uuid1())
-s.send(mkpack.buildPack('verify', sign(rsa_file, veri_cont).decode('utf-8') + veri_cont + veriNo))
+cmds = ['os.listdir()', 'print("hehe1")', 'print("hehe2")']
+s = socket.socket()
+host = "127.0.0.1"
+port = 8888
+dataBuf = bytes()
+s.connect((host, port))
+
+s.send(mkpack.buildPack('verify', sign(rsa_file, veri_cont).decode('utf-8') + veri_cont))
 veri_ok = False
+cmd_flag = False
 BK = False
 while True:
     data = s.recv(1024)
@@ -47,34 +48,28 @@ while True:
         if not dataBody:
             break
         dataType = dataType.strip('\x00')
-        if dataType == 'veriFail' and veriNo == dataBody[-36:]:
+        if dataType == 'veriFail':
             print('Verify failed.\nConnection closed.')
             BK = True
             break
-        if dataType == 'veriOK' and veriNo == dataBody[-36:]:
+        if dataType == 'veriOK':
             veri_ok = True
+            cmd_flag = True
 
         if veri_ok:
-            if veriNo == dataBody[-36:]:
-                send_uuid = str(uuid.uuid1())
-                s.send(mkpack.buildPack('cmd', 'os.listdir()' + send_uuid))
+            if cmd_flag:
+                s.send(mkpack.buildPack('cmd', json.dumps(cmds)))
+                cmd_flag = False
             if dataType == 'RunErr':
-                print('Run failed: ' + dataBody[:-36])
                 print('Run failed: ' + dataBody)
                 BK = True
                 break
-            if dataType == 'RunFin' and send_uuid == dataBody[-36:]:
-                send_uuid = str(uuid.uuid1())
-                # print(dataBody[:-36] + 'Run completely.')
-                print(dataBody + 'Run completely.')
-                s.send(mkpack.buildPack('cmd', 'print("hehehe")' + send_uuid))
-            if dataType == 'RunFin' and send_uuid == dataBody[-36:]:
-                send_uuid = str(uuid.uuid1())
-                # print(dataBody[:-36] + 'Run completely.')
-                print(dataBody + 'Run completely.')
-                print('Over')
+            if dataType == 'RunFin':
+                print(dataBody + ' Run completed.')
+            if dataType == 'End':
+                print('Task completed.', dataBody)
+                time.sleep(5)
                 BK = True
-                veri_ok = False
                 break
     if BK:
         break
