@@ -54,6 +54,13 @@ while True:
             else:
                 conn.send(mkpack.buildPack('veriFail', '0'))
 
+        if dataType == 'fileStart':
+            file_name = json.loads(dataBody)[0]
+            file_size = json.loads(dataBody)[1]
+            print(file_name, file_size)
+        if dataType == 'file':
+            print(dataBody)
+
         if dataType == 'cmd':
             cmds = json.loads(dataBody)
             print(cmds)

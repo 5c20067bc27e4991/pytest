@@ -7,4 +7,4 @@ def f():
     print(t2.tt + 444)
 
 
-f()
+print(('啊'.encode()[:-1]).decode('utf-8'))

@@ -30,7 +30,7 @@ print((str1.isdigit()))
 print((str1.islower()))
 print((str1.isupper()))
 print((str1.istitle()))
-print('cmp()==>',(cmp(str1,str1.upper())))
+# print('cmp()==>',(cmp(str1,str1.upper())))
 print('-'.join(str1))
 
 str2=' I\'m fine,thank you.Fuck you. '

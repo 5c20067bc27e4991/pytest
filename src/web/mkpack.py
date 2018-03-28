@@ -1,18 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import struct
+import hashlib
 
 structDataType = '!10sL'
 headSize = struct.calcsize(structDataType)
+
+
+def cal_md5(file_path):
+    with open(file_path, 'rb') as fr:
+        md5 = hashlib.md5()
+        md5.update(fr.read())
+        md5 = md5.hexdigest()
+        return md5
 
 
 def buildPack(dataType, dataBody):
     '''
     数据头结构: [ 数据类型 数据体长度 ]
     '''
-    head = [dataType.encode('utf-8'), len(dataBody.encode('utf-8'))]
+    if not dataType == 'file':
+        dataBody = dataBody.encode('utf-8')
+    head = [dataType.encode(), len(dataBody)]
     headStruct = struct.pack(structDataType, *head)
-    sendData = headStruct + dataBody.encode('utf-8')
+    sendData = headStruct + dataBody
     return sendData
 
 
