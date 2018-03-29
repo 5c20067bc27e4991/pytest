@@ -21,7 +21,6 @@ else:
 
 rsa_file = 'id_rsa'
 
-
 def sign(rsa_file, cont):
     with open(rsa_file, 'r') as rsa_key:
         rsa_cont = rsa_key.read()

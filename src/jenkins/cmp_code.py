@@ -4,6 +4,7 @@ import os
 import tarfile
 import time
 
+
 def cmp_dir(src_path, *src_dirs, cmp_dst_path='/tmp'):
     '''
     不压缩外层目录，只压缩目标文件夹

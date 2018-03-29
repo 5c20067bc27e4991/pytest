@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import socket
 import mkpack
 import base64
 import json
-import os
 import time
 import hashlib
 from socketserver import StreamRequestHandler, ThreadingTCPServer
@@ -14,6 +12,7 @@ from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import MD5
 
 rsa_pub_file = 'id_rsa.pub'
+
 
 def veri_sign(rsa_pub_file, cont, signature):
     with open(rsa_pub_file, 'r') as rsa_pub:
@@ -24,13 +23,7 @@ def veri_sign(rsa_pub_file, cont, signature):
     return verifier.verify(h, base64.b64decode(signature))
 
 
-def dataHandle(dataType, dataBody):
-    print('Type: ' + dataType)
-    print('Body: ' + dataBody)
-
-
-# self.request, addr = s.accept()
-class MyServer(StreamRequestHandler):
+class DeploySvr(StreamRequestHandler):
     def handle(self):
         verified = False
         dataBuf = bytes()
@@ -93,7 +86,8 @@ class MyServer(StreamRequestHandler):
                     self.request.send(mkpack.buildPack('End', '0'))
                     print('End')
 
+
 host = '0.0.0.0'
 port = 8888
-deployed_end = ThreadingTCPServer((host, port), MyServer)
+deployed_end = ThreadingTCPServer((host, port), DeploySvr)
 deployed_end.serve_forever()

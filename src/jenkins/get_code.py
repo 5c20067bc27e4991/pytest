@@ -2,6 +2,13 @@
 import os
 from env import ENV
 
+def get_branch(br):
+    if not br:
+        print('未选择分支，默认获取主干代码。')
+    else:
+        print('已选择分支' + br)
+        os.system('git checkout ' + br)
+        os.system('git pull')
 
 def rollback(roll):
     '''
