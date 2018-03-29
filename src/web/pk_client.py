@@ -32,7 +32,7 @@ def sign(rsa_file, cont):
     return signature
 
 
-code_file = r'C:\Users\guanglin\Desktop\t.exe'
+code_file = r'C:\Users\guanglin\Desktop\1.zip'
 if os.path.exists(code_file):
     file_size = os.path.getsize(code_file)
 else:
@@ -82,7 +82,7 @@ while True:
                         send_size = send_once if rem_size > send_once else rem_size
                         send_b = cf.read(send_size)
                         s.send(mkpack.buildPack('file', send_b))
-                        # md5.update(send_b)
+                        md5.update(send_b)
                         sent_size += send_size
                         print(sent_size, '/', file_size)
                 md5 = md5.hexdigest()
