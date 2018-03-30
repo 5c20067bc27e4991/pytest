@@ -8,6 +8,7 @@ port = 9999
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((host, port))
-s.send('hello'.encode())
-print(s.recv(1024))
+for i in range(100):
+    s.send('hello'.encode())
+    # print(s.recv(1024))
 s.close()

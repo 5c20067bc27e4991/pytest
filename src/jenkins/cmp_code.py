@@ -12,7 +12,8 @@ def cmp_dir(src_path, *src_dirs, cmp_dst_path='/tmp'):
     curr_path = os.getcwd()
     os.chdir(src_path)
     curr_time = time.strftime('%Y%m%d_%H%M%S', time.localtime())
-    dst_file_full = os.path.join(cmp_dst_path, 'src' + curr_time + '.tgz')
+    dst_file_name = 'src' + curr_time + '.tgz'
+    dst_file_full = os.path.join(cmp_dst_path, dst_file_name)
     tar = tarfile.open(dst_file_full, 'w:gz')
     for i in src_dirs:
         try:

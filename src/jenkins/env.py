@@ -9,6 +9,9 @@ except KeyError:
     branch = ''
 src_path = ENV['WORKSPACE']
 deploy_dirs = tuple(ENV['Deploy_dir'].replace(' ', '').split(','))
-dest_host = ENV['Dest_Env'][0]
+dest_host = ENV['Dest_Env'].split('|')[0].strip()
+dest_path = ENV['Dest_Env'].split('|')[-1].strip()
 roll = ENV['Rollback']
-print('Deploy_Info: %s %s %s.' % (src_path, deploy_dirs, dest_host))
+
+print('-----------------\nENV FULl:\n',ENV,'-----------------\n')
+print('Deploy_Info: %s %s %s %s.' % (src_path, deploy_dirs, dest_host, dest_path))

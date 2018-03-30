@@ -4,14 +4,15 @@
 import mkpack
 import base64
 import json
-import time
 import hashlib
+import os
+import decmp_code
 from socketserver import StreamRequestHandler, ThreadingTCPServer
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import MD5
 
-rsa_pub_file = 'id_rsa.pub'
+rsa_pub_file = os.path.join(os.path.dirname(os.sys.argv[0]), 'id_rsa.pub')
 
 
 def veri_sign(rsa_pub_file, cont, signature):
@@ -53,8 +54,7 @@ class DeploySvr(StreamRequestHandler):
                 if dataType == 'file':
                     if create_file_flag:
                         new_md5 = hashlib.md5()
-                        curr_time = time.strftime('%Y%m%d%H%M%S_', time.localtime())
-                        new_file = open(curr_time + file_name, 'wb')
+                        new_file = open(file_name, 'wb')
                         create_file_flag = False
                     new_file.write(dataBody)
                     new_md5.update(dataBody)
@@ -66,9 +66,11 @@ class DeploySvr(StreamRequestHandler):
                     print('MD5: ' + dataBody)
                     if dataBody == new_md5:
                         print('文件接收成功')
+                        self.request.send(mkpack.buildPack('FileOK', '文件接收成功'))
                     else:
-                        print('File received wrong.')
-                    self.request.send(mkpack.buildPack('End', '0'))
+                        print('文件接收失败')
+                        self.request.send(mkpack.buildPack('FileErr', '文件接收失败'))
+                        break
 
                 if dataType == 'cmd':
                     cmds = json.loads(dataBody)
@@ -78,13 +80,14 @@ class DeploySvr(StreamRequestHandler):
                             eval(i)
                             # print(i)
                         except BaseException:
-                            self.request.send(mkpack.buildPack('RunErr', i))
-                            print('RunErr: ' + i)
+                            self.request.send(mkpack.buildPack('CmdErr', i))
+                            print('CmdErr: ' + i)
                             break
                         self.request.send(mkpack.buildPack('RunFin', i))
                         print(i, 'ok')
-                    self.request.send(mkpack.buildPack('End', '0'))
-                    print('End')
+                    self.request.send(mkpack.buildPack('End', '发布完成'))
+                    print('所有命令执行成功。')
+
 
 
 host = '0.0.0.0'

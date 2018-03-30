@@ -5,6 +5,10 @@ from env import ENV
 def get_branch(br):
     if not br:
         print('未选择分支，默认获取主干代码。')
+        os.system('git checkout master')
+        os.system('git pull')
+
+
     else:
         print('已选择分支' + br)
         os.system('git checkout ' + br)
