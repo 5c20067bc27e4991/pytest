@@ -7,7 +7,6 @@ import base64
 import json
 import time
 import os
-import sys
 import hashlib
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
@@ -97,6 +96,7 @@ def sock_jk(deploy_host, code_file, cmds):
                     md5 = md5.hexdigest()
                     s.send(mkpack.buildPack('fileFin', md5))
                     print('File sent.')
+                    send_file_flag = False
 
                 if dataType == 'FileErr':
                     print(dataBody)
@@ -114,6 +114,8 @@ def sock_jk(deploy_host, code_file, cmds):
                     print('命令执行失败: ' + dataBody)
                     BK = True
                     break
+                if dataType == 'Warn':
+                    print(dataBody)
                 if dataType == 'RunFin':
                     print(dataBody + ' Run completed.')
                 if dataType == 'End':

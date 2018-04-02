@@ -6,7 +6,8 @@ import base64
 import json
 import hashlib
 import os
-import decmp_code
+import shutil
+from cmp_code import cmp_dir, decmp_dir
 from socketserver import StreamRequestHandler, ThreadingTCPServer
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
@@ -27,9 +28,10 @@ def veri_sign(rsa_pub_file, cont, signature):
 class DeploySvr(StreamRequestHandler):
     def handle(self):
         verified = False
+        # deployErr = False
         dataBuf = bytes()
         while True:
-            data = self.request.recv(1024)
+            data = self.request.recv(10)
             dataBuf += data
             while len(dataBuf) >= mkpack.headSize:
                 dataType, dataBody, dataBuf = mkpack.recvPack(dataBuf, mkpack.headSize)
@@ -45,6 +47,7 @@ class DeploySvr(StreamRequestHandler):
                         verified = True
                     else:
                         self.request.send(mkpack.buildPack('veriFail', '0'))
+
                 # print(dataType, '--', dataBody)
                 if dataType == 'fileStart':
                     file_name = json.loads(dataBody)[0]
@@ -61,7 +64,7 @@ class DeploySvr(StreamRequestHandler):
                 if dataType == 'fileFin':
                     new_file.close()
                     new_md5 = new_md5.hexdigest()
-                    print(file_name + 'received completely.')
+                    print(file_name + ' received completely.')
                     print('New MD5: ' + new_md5)
                     print('MD5: ' + dataBody)
                     if dataBody == new_md5:
@@ -74,20 +77,37 @@ class DeploySvr(StreamRequestHandler):
 
                 if dataType == 'cmd':
                     cmds = json.loads(dataBody)
+                    dirs_name = cmds[0]
+                    depl_path = cmds[1]
                     print(cmds)
-                    for i in cmds:
+                    print(dirs_name)
+                    print(depl_path)
+                    ##备份原文件
+                    bak_path = os.path.dirname(os.sys.argv[0])
+                    cmp_dir(depl_path, *dirs_name, bak='Y', cmp_dst_path=bak_path)
+                    print('Backup completed!!!')
+                    ##删除原文件
+                    for i in dirs_name:
+                        try:
+                            shutil.rmtree(os.path.join(depl_path, i))
+                        except BaseException:
+                            print('删除%s失败！' % i)
+                            del_err = '删除%s失败！' % i
+                            self.request.send(mkpack.buildPack('Warn', del_err))
+                    for i in cmds[2:]:
                         try:
                             eval(i)
                             # print(i)
                         except BaseException:
                             self.request.send(mkpack.buildPack('CmdErr', i))
                             print('CmdErr: ' + i)
+                            deployErr = True
                             break
                         self.request.send(mkpack.buildPack('RunFin', i))
                         print(i, 'ok')
-                    self.request.send(mkpack.buildPack('End', '发布完成'))
-                    print('所有命令执行成功。')
 
+                    self.request.send(mkpack.buildPack('End', '发布完成'))
+                    print('发布完成。')
 
 
 host = '0.0.0.0'
