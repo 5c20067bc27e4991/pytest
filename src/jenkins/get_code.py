@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import os
+import subprocess
 from env import ENV
+
 
 def get_branch(br):
     if not br:
@@ -14,6 +16,7 @@ def get_branch(br):
         os.system('git checkout ' + br)
         os.system('git pull')
 
+
 def rollback(roll):
     '''
     回滚处理
@@ -22,7 +25,7 @@ def rollback(roll):
         if 'Tag' in ENV:
             ver_tag = ENV['Tag']
         if 'Input_Tag' in ENV:
-            ver_tag = ENV['Tag']
+            ver_tag = ENV['Input_Tag']
         if 'Revision' in ENV:
             ver_tag = ENV['Revision']
         if 'Input_Revision' in ENV:
@@ -32,5 +35,8 @@ def rollback(roll):
         except NameError:
             print('请设置代码Tag或ID！')
             exit(-1)
-        print('Ver_Tag: ' + ver_tag)
-        os.system('git checkout ' + ver_tag)
+        try:
+            subprocess.check_call(['git', 'checkout', ver_tag])
+        except:
+            print('选择版本时出现错误,中止发布。')
+            exit(-1)

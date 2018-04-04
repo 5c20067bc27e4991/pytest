@@ -109,7 +109,7 @@ class DeploySvr(StreamRequestHandler):
                     self.request.send(mkpack.buildPack('End', '发布完成'))
                     print('发布完成。')
                     os.remove(file_name)
-                    time.sleep(20)
+                    time.sleep(300)
                     os.remove(bak_file)
                     print('已删除备份文件%s。' % os.path.split(bak_file)[-1])
 
