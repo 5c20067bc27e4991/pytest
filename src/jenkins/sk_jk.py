@@ -30,9 +30,6 @@ def sign(rsa, cont):
     return signature
 
 
-# src_file = r'C:\Users\guanglin\Desktop\1.zip'
-
-
 def sock_jk(deploy_host, code_file, cmds):
     if os.path.exists(code_file):
         file_size = os.path.getsize(code_file)
