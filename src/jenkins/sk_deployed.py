@@ -7,6 +7,7 @@ import json
 import hashlib
 import os
 import shutil
+import time
 from cmp_code import cmp_dir, decmp_dir
 from socketserver import StreamRequestHandler, ThreadingTCPServer
 from Crypto.PublicKey import RSA
@@ -28,7 +29,6 @@ def veri_sign(rsa_pub_file, cont, signature):
 class DeploySvr(StreamRequestHandler):
     def handle(self):
         verified = False
-        # deployErr = False
         dataBuf = bytes()
         while True:
             data = self.request.recv(10)
@@ -76,16 +76,15 @@ class DeploySvr(StreamRequestHandler):
                         break
 
                 if dataType == 'cmd':
-                    cmds = json.loads(dataBody)
-                    dirs_name = cmds[0]
-                    depl_path = cmds[1]
-                    print(cmds)
-                    print(dirs_name)
-                    print(depl_path)
+                    ##data结构[待发布的程序目录, 目标路径]
+                    data = json.loads(dataBody)
+                    dirs_name = data[0]
+                    depl_path = data[1]
+                    print(data)
                     ##备份原文件
                     bak_path = os.path.dirname(os.sys.argv[0])
-                    cmp_dir(depl_path, *dirs_name, bak='Y', cmp_dst_path=bak_path)
-                    print('Backup completed!!!')
+                    bak_file = cmp_dir(depl_path, *dirs_name, bak='Y', cmp_dst_path=bak_path)
+                    print('已备份原程序。')
                     ##删除原文件
                     for i in dirs_name:
                         try:
@@ -94,20 +93,25 @@ class DeploySvr(StreamRequestHandler):
                             print('删除%s失败！' % i)
                             del_err = '删除%s失败！' % i
                             self.request.send(mkpack.buildPack('Warn', del_err))
-                    for i in cmds[2:]:
-                        try:
-                            eval(i)
-                            # print(i)
-                        except BaseException:
-                            self.request.send(mkpack.buildPack('CmdErr', i))
-                            print('CmdErr: ' + i)
-                            deployErr = True
-                            break
-                        self.request.send(mkpack.buildPack('RunFin', i))
-                        print(i, 'ok')
+                    decmp_dir(file_name, depl_path)
+                    # for i in data[2:]:
+                    #     try:
+                    #         eval(i)
+                    #         # print(i)
+                    #     except BaseException:
+                    #         self.request.send(mkpack.buildPack('CmdErr', i))
+                    #         print('CmdErr: ' + i)
+                    #         deployErr = True
+                    #         break
+                    #     self.request.send(mkpack.buildPack('RunFin', i))
+                    #     print(i, 'ok')
 
                     self.request.send(mkpack.buildPack('End', '发布完成'))
                     print('发布完成。')
+                    os.remove(file_name)
+                    time.sleep(20)
+                    os.remove(bak_file)
+                    print('已删除备份文件%s。' % os.path.split(bak_file)[-1])
 
 
 host = '0.0.0.0'

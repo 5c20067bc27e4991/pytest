@@ -5,14 +5,12 @@ import socket
 import mkpack
 import base64
 import json
-import time
 import os
 import hashlib
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import MD5
 
-t_start = time.time()
 veri_cont_init = 'Hello'
 if len(veri_cont_init) >= 5:
     veri_cont = veri_cont_init[:5]
@@ -83,6 +81,7 @@ def sock_jk(deploy_host, code_file, cmds):
                     rem_size = 0
                     send_once = 5000
                     md5 = hashlib.md5()
+                    ##发送文件名和大小
                     s.send(mkpack.buildPack('fileStart', json.dumps([os.path.split(code_file)[-1], file_size])))
                     with open(code_file, 'rb') as cf:
                         while sent_size < file_size:
@@ -126,6 +125,3 @@ def sock_jk(deploy_host, code_file, cmds):
             break
 
     s.close()
-    t_end = time.time()
-
-    print('Took %s seconds' % (t_end - t_start))
