@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import base64
@@ -32,6 +32,7 @@ def veri_sign(rsa_pub_file, cont, signature):
         print("Verify signature successfully.")
     else:
         print('Invalid signature!')
+
 
 SIGN1 = sign(rsa_file, cont)
 print(SIGN1)
