@@ -17,10 +17,7 @@ while True:
     fname, fsuff = os.path.splitext(bname)
     dst_name = fname + '_' + str(curr_time) + fsuff
     try:
-        shutil.copy(ran_file, os.path.join('H:\\', dst_name))
+        shutil.copy(ran_file, os.path.join('I:\\', dst_name))
     except BaseException:
         print('Copy completed.')
         break
-    #
-    # shutil.copy(ran_file, dst_name)
-    # print(dst_name)
