@@ -13,3 +13,5 @@ def t22(n):
 
 
 print('来自 t2')
+import  uuid
+print(''.join(str(uuid.uuid1()).split('-')))

@@ -8,19 +8,17 @@ import time
 
 curr_path = os.getcwd()
 
-os.chdir(r'C:\Users\administrator\Desktop\t')
-ori_flist = os.listdir('.')
-print(ori_flist)
+src_path = os.path.join(os.environ['USERPROFILE'], r'Desktop\t')
+file_list = os.listdir(src_path)
 while True:
-    ran_file = random.choice(ori_flist)
-    bname = os.path.basename(ran_file)
-    fname, fsuff = os.path.splitext(bname)
+    rand_file = random.choice(file_list)
+    src_file = os.path.join(src_path, rand_file)
+    fname, fsuff = os.path.splitext(rand_file)
     # curr_time = round(time.time() * 1000)
     # dst_name = fname + '_' + str(curr_time) + fsuff
-
-    dst_name = fname + '_' + str(uuid.uuid1()) + fsuff
+    dst_name = fname + '_' + ''.join(str(uuid.uuid1()).split('-')) + fsuff
     try:
-        shutil.copy(ran_file, os.path.join('H:\\', dst_name))
+        shutil.copy(src_file, os.path.join('H:\\', dst_name))
         print(dst_name + ' copied.')
     except BaseException:
         print('Copy completed.')
