@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import hashlib
-from Crypto.Hash import MD5
+from Cryptodome.Hash import MD5
+
 
 str1 = 'hello'
 str2 = 'world'
@@ -14,3 +15,4 @@ print('MD5_2: ' + md5_2.hexdigest())
 
 hash_obj = MD5.new((str1 + str2).encode('utf-8'))
 print(hash_obj.digest())
+# print(hash_obj.digest().decode('hex'))
