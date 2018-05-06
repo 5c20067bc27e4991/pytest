@@ -29,8 +29,8 @@ def getMD5List(files_path):
 
     # print(hash_dict)
     with(open('md5.txt', 'w')) as m:
-        for i in hash_dict:
-            m.write(hash_dict[i] + '\t' + i + '\n')
+        for i in sorted(hash_dict.items(),key=lambda d:d[1]):
+            m.write(i[1] + '\t' + i[0] + '\n')
 
     os.chdir(curr_pwd)
     return hash_dict
@@ -62,5 +62,5 @@ def move_dupl(file_path):
     print('Moved %d duplicate files.' % dupl_size)
 
 
-getMD5List(r"Z:\图形类\(.bmp) Bitmap 位图图像\dupl1525586876")
-# move_dupl(r'Z:\图形类\(.bmp) Bitmap 位图图像')
+# getMD5List(r"Y:\test")
+move_dupl(r'Y:\test\dupl1525608961')
