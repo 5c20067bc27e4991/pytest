@@ -62,5 +62,5 @@ def move_dupl(file_path):
     print('Moved %d duplicate files.' % dupl_size)
 
 
-# getMD5List(r"Y:\test")
-move_dupl(r'Y:\test\dupl1525608961')
+# getMD5List(r"Z:")
+move_dupl(r'Z:')
