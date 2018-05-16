@@ -21,7 +21,10 @@ print('MD5_2: ' + md5_2.hexdigest())
 
 import hmac
 
-h1 = hmac.new(b'key', b'123', hashlib.sha256)
+k = 'key'
+s = '123'
+t=256
+# h1 = hmac.new(b'key', b'123', hashlib.sha256)
+h1 = eval('hmac.new("' + k + '".encode(),b"123",hashlib.sha'+str(t)+')')
 # h1.update(b'456')
 print(h1.hexdigest())
-

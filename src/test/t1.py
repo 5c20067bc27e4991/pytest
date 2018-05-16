@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import time
-
+import os
 # import t2
 
 print(time.strftime('%Y-%m-%d %H%M%S', time.localtime()))
@@ -15,4 +15,6 @@ def f(a, b=1):
 
 a = '123'
 
-input('shuru'+a)
+f_path=input('Input path: ')
+
+print(os.path.exists(f_path))

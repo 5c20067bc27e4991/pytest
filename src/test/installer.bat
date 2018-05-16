@@ -1,5 +1,5 @@
 @echo off
-cd C:\Users\guanglin\git\pytest\src\test\
+cd C:\Users\Administrator\git\pytest\src\test\
 ::c:
-pyinstaller -F  t1.py
+pyinstaller -F  hashTool.py
 pause
