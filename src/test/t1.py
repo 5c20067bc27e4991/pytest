@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import time
-import t2
-import t3
+
+# import t2
 
 print(time.strftime('%Y-%m-%d %H%M%S', time.localtime()))
 
 
-def f():
-    print(t2.tt + 444)
+def f(a, b=1):
+    # print(t2.tt + 444)
+    print('This is f function.')
+    print('v1=%s,v2=%s' % (a, b))
 
 
-f()
-x = t2.t22(100)
-print(x)
+a = '123'
+
+input('shuru'+a)
