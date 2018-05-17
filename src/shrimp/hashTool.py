@@ -89,21 +89,24 @@ def hm(sha_type):
 
 
 def indexMenu():
-    hash_method = {0: ['Base64', 'Base64()'], 1: ['MD5', 'MD5()'], 2: ['MD5(file)', 'MD5(1)'],
-                   3: ['SHA-256', 'sha(256)'], 4: ['SHA-512', 'sha(512)'],
-                   5: ['HMACSHA-256', 'hm(256)'], 6: ['HMACSHA-512', 'hm(512)'],
-                   9: ['Quit', 'os._exit(0)']}
+    hash_method = {'1': ['Base64', 'Base64()'], '2': ['MD5', 'MD5()'], '3': ['MD5(file)', 'MD5(1)'],
+                   '4': ['SHA-256', 'sha(256)'], '5': ['SHA-512', 'sha(512)'],
+                   '6': ['HMACSHA-256', 'hm(256)'], '7': ['HMACSHA-512', 'hm(512)'],
+                   'Q': ['Quit', 'os._exit(0)']}
     print('-----Hash method-----')
     for i in sorted(hash_method.items(), key=lambda d: d[0]):
         print(i[0], '\t', i[1][0])
     print('-' * 40)
 
-    try:
-        ch = int(input('Input hash method code:'))
-        # print(hash_method[ch][1])
-        eval(hash_method[ch][1])
-    except BaseException:
-        print('Invalid Code.')
+    err_sum = 0
+    while err_sum < 3:
+        try:
+            ch = input('Input hash method code:')
+            eval(hash_method[ch][1])
+        except BaseException:
+            print('Invalid Code.')
+            err_sum += 1
+    else:
         os._exit(-1)
 
 
