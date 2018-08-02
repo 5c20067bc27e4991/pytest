@@ -5,9 +5,8 @@ Created on 2017年3月24日
 '''
 import random, time
 
-lst = []
-for i in range(10):
-    lst.append(random.randrange(0, 100, 5))
+lst = list(range(10))
+random.shuffle(lst)
 # t1=time.time()    
 print(lst)
 for i in range(len(lst) - 1):
