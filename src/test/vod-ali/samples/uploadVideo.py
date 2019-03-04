@@ -18,7 +18,7 @@ def testUploadLocalVideo(accessKeyId, accessKeySecret, filePath, storageLocation
         
     except AliyunVodException as e:
         print(e)
- 
+
 # 测试上传网络视频
 def testUploadWebVideo(accessKeyId, accessKeySecret, fileUrl, storageLocation=None):
     try:
@@ -64,7 +64,11 @@ def testUploadWebM3u8(accessKeyId, accessKeySecret, m3u8FileUrl):
 accessKeyId = 'LTAIbpumCihkcYno0'
 accessKeySecret = '04uI4ckSCpCb0ndTQFBhgAw60GW6VNo'
 
-localFilePath = r'D:\Temp\sample.mp4'
+#home
+#localFilePath = r'D:\Temp\sample.mp4'
+
+#WT
+localFilePath = r'E:\工作\测试\测试素材\test.mp4'
 testUploadLocalVideo(accessKeyId, accessKeySecret, localFilePath)
 
 fileUrl = 'http://sample.oss.aliyuncs.com/video/sample.mp4'
